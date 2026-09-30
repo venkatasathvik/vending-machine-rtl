@@ -6,9 +6,9 @@ A synchronous Finite State Machine (FSM) implementation of a vending machine con
 
 * **Product Price:** 15 Rs
 * **Accepted Denominations:** 5 Rs, 10 Rs
-* **Architecture:** Mealy/Moore hybrid FSM (Outputs based on state, state transitions based on clock and input).
-* **Language:** Verilog HDL
-* **Target Environment:** Xilinx Vivado / ModelSim
+* **Architecture:** FSM (Outputs based on state, state transitions based on clock and input)
+* **Language:** Verilog 
+* **Target Environment:** Xilinx Vivado
 
 ## State Machine Design
 
@@ -39,12 +39,3 @@ The FSM is designed using 4 distinct states, encoded using 2 bits:
 
 * `vending_machine.v` - The core FSM RTL design module.
 * `tb_vending_machine.v` - The testbench simulating various user insertion sequences.
-
-## How to Simulate
-
-1. Open **Xilinx Vivado** and create a new RTL project.
-2. Add `vending_machine.v` as a Design Source.
-3. Add `tb_vending_machine.v` as a Simulation Source.
-4. Set `tb_vending_machine` as the Top Module.
-5. Click **Run Simulation** -> **Run Behavioral Simulation**.
-6. View the generated waveforms to verify the `dispense` signal triggers appropriately after the correct coin sequences.
