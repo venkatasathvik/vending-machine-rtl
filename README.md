@@ -1,18 +1,50 @@
-# Automated Vending Machine Controller
+# Vending Machine Controller FSM in Verilog
 
-A digital transaction controller modeled for an automated vending machine. The design utilizes synchronous sequential logic to process coin dispensing and inventory tracking seamlessly.
+A synchronous Finite State Machine (FSM) implementation of a vending machine controller written in Verilog. This project simulates a digital controller that accepts 5 Rs and 10 Rs coins, tracks the accumulated amount, and triggers a dispense signal when the total reaches 15 Rs.
 
-###  Tools & Technologies
-* **Hardware Description Language:** Verilog HDL
-* **Synthesis & Simulation:** Xilinx Vivado
-* **Circuit Modeling:** NI Multisim
+## Project Overview
 
-###  System Architecture
-* **Modular RTL Design:** Architected with a distinct separation between the datapath and control unit to reduce resource consumption and improve code reusability.
-* **State Transition Logic:** Driven by comprehensive state transition tables mapping every possible user input, coin denomination, and inventory level.
-* **Circuit Implementation:** Logic gate mapping and circuit-level implementation modeled and verified using Multisim.
+* **Product Price:** 15 Rs
+* **Accepted Denominations:** 5 Rs, 10 Rs
+* **Architecture:** Mealy/Moore hybrid FSM (Outputs based on state, state transitions based on clock and input).
+* **Language:** Verilog HDL
+* **Target Environment:** Xilinx Vivado / ModelSim
 
-###  Verification & Testing
-* **Directed Test Vectors:** Conducted functional verification covering boundary transaction failures (e.g., insufficient funds) and asynchronous resets.
-* **Waveform Analysis:** *(Note: Insert a screenshot of your Vivado timing waveforms here)*
-* **Circuit Schematic:** *(Note: Insert a screenshot of your Multisim circuit here)*
+## State Machine Design
+
+The FSM is designed using 4 distinct states, encoded using 2 bits:
+* `S_0` (00): Initial state, 0 Rs accumulated.
+* `S_5` (01): 5 Rs accumulated.
+* `S_10` (10): 10 Rs accumulated.
+* `S_15` (11): 15 Rs accumulated. (Dispense state, auto-resets to `S_0`).
+
+### Truth Table (State Transitions)
+
+| Current State (Q1 Q0) | Input 5 Rs | Input 10 Rs | Next State (Q1next Q0next) | Output (Dispense) | Description |
+| :---: | :---: | :---: | :---: | :---: | :--- |
+| **00 (0 Rs)** | 0 | 0 | **00 (0 Rs)** | 0 | Waiting for coin. |
+| **00 (0 Rs)** | 1 | 0 | **01 (5 Rs)** | 0 | 5 Rs inserted. |
+| **00 (0 Rs)** | 0 | 1 | **10 (10 Rs)** | 0 | 10 Rs inserted. |
+| **01 (5 Rs)** | 0 | 0 | **01 (5 Rs)** | 0 | Waiting. |
+| **01 (5 Rs)** | 1 | 0 | **10 (10 Rs)** | 0 | 5 + 5 = 10 Rs. |
+| **01 (5 Rs)** | 0 | 1 | **11 (15 Rs)** | 0 | 5 + 10 = 15 Rs. |
+| **10 (10 Rs)** | 0 | 0 | **10 (10 Rs)** | 0 | Waiting. |
+| **10 (10 Rs)** | 1 | 0 | **11 (15 Rs)** | 0 | 10 + 5 = 15 Rs. |
+| **10 (10 Rs)** | 0 | 1 | **11 (15 Rs)** | 0 | 10 + 10 = 20 Rs (Dispense triggers at $\ge$ 15). |
+| **11 (15 Rs)** | X | X | **00 (0 Rs)** | 1 | **DISPENSE!** Auto-resets on next clock edge. |
+
+*(Note: X = Don't Care)*
+
+## Repository Structure
+
+* `vending_machine.v` - The core FSM RTL design module.
+* `tb_vending_machine.v` - The testbench simulating various user insertion sequences.
+
+## How to Simulate
+
+1. Open **Xilinx Vivado** and create a new RTL project.
+2. Add `vending_machine.v` as a Design Source.
+3. Add `tb_vending_machine.v` as a Simulation Source.
+4. Set `tb_vending_machine` as the Top Module.
+5. Click **Run Simulation** -> **Run Behavioral Simulation**.
+6. View the generated waveforms to verify the `dispense` signal triggers appropriately after the correct coin sequences.
