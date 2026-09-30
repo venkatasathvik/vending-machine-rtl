@@ -52,11 +52,3 @@ The waveform demonstrates the successful execution of three distinct test cases,
 
 * `vending_machine.v` - The core FSM RTL design module.
 * `tb_vending_machine.v` - The testbench simulating various user insertion sequences.
-
-## How to Simulate
-
-1. Open **Xilinx Vivado** and create a new RTL project.
-2. Add `vending_machine.v` as a Design Source.
-3. Add `tb_vending_machine.v` as a Simulation Source.
-4. Set `tb_vending_machine` as the Top Module.
-5. Click **Run Simulation** -> **Run Behavioral Simulation**.
